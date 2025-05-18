@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - Sistema de Gestión de Evidencias{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white text-center">
+        <h3 class="my-2">
+          <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+        </h3>
+      </div>
+      <div class="card-body p-4">
+        <form method="post" action="{% url 'authentication:login' %}">
+          {% csrf_token %}
+          
+          {% if form.errors %}
+          <div class="alert alert-danger">
+            <p class="mb-0">Usuario o contraseña incorrectos. Por favor intente nuevamente.</p>
+          </div>
+          {% endif %}
+          
+          <div class="mb-3">
+            <label for="id_username" class="form-label">Usuario:</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+              <input type="text" name="username" id="id_username" class="form-control" required autofocus>
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <label for="id_password" class="form-label">Contraseña:</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-lock"></i></span>
+              <input type="password" name="password" id="id_password" class="form-control" required>
+            </div>
+          </div>
+          
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="fas fa-sign-in-alt me-2"></i>Ingresar
+            </button>
+          </div>
+          
+          {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+          {% endif %}
+        </form>
+      </div>
+      <div class="card-footer text-center">
+        <p class="mb-0">
+          <a href="{% url 'password_reset' %}">¿Olvidó su contraseña?</a>
+        </p>
+      </div>
+    </div>
+    
+    <div class="text-center mt-4">
+      <p class="text-muted">
+        Sistema de Gestión de Evidencias<br>
+        Ministerio Público
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %} 

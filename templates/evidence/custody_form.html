@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de Cadena de Custodia - Sistema de Gestión de Evidencias{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>
+    <i class="fas fa-exchange-alt me-2"></i>
+    Registro de Cadena de Custodia
+  </h2>
+  <div>
+    <a href="{% url 'evidence:evidence_detail' evidence.id %}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-1"></i>Volver a Evidencia
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Nuevo Registro de Custodia</h5>
+      </div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          
+          {% if form.errors %}
+          <div class="alert alert-danger mb-4">
+            <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Error en el formulario</h5>
+            <p>Por favor, corrija los siguientes errores:</p>
+            <ul class="mb-0">
+              {% for field in form %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+          
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.received_by.id_for_label }}" class="form-label">{{ form.received_by.label }} <span class="text-danger">*</span></label>
+                {{ form.received_by }}
+                {% if form.received_by.help_text %}
+                <div class="form-text">{{ form.received_by.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.handed_by.id_for_label }}" class="form-label">{{ form.handed_by.label }}</label>
+                {{ form.handed_by }}
+                {% if form.handed_by.help_text %}
+                <div class="form-text">{{ form.handed_by.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.reason.id_for_label }}" class="form-label">{{ form.reason.label }} <span class="text-danger">*</span></label>
+                {{ form.reason }}
+                {% if form.reason.help_text %}
+                <div class="form-text">{{ form.reason.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.destination.id_for_label }}" class="form-label">{{ form.destination.label }} <span class="text-danger">*</span></label>
+                {{ form.destination }}
+                {% if form.destination.help_text %}
+                <div class="form-text">{{ form.destination.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="{{ form.notes.id_for_label }}" class="form-label">{{ form.notes.label }}</label>
+                {{ form.notes }}
+                {% if form.notes.help_text %}
+                <div class="form-text">{{ form.notes.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 d-flex justify-content-end">
+            <a href="{% url 'evidence:evidence_detail' evidence.id %}" class="btn btn-secondary me-2">
+              <i class="fas fa-times me-1"></i>Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-1"></i>Guardar Registro
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información de la Evidencia</h5>
+      </div>
+      <div class="card-body">
+        <div class="text-center mb-3">
+          {% if evidence.photo %}
+          <img src="{{ evidence.photo.url }}" alt="Foto de evidencia" class="img-fluid img-thumbnail mb-2" style="max-height: 150px;">
+          {% else %}
+          <div class="py-4 bg-light rounded">
+            <i class="fas fa-camera text-muted" style="font-size: 3rem;"></i>
+            <p class="mt-2 mb-0 text-muted">Sin fotografía</p>
+          </div>
+          {% endif %}
+        </div>
+        
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <small class="text-muted d-block">Código:</small>
+            <strong>{{ evidence.code }}</strong>
+          </li>
+          <li class="list-group-item">
+            <small class="text-muted d-block">Caso:</small>
+            <strong>{{ evidence.case_number }}</strong>
+          </li>
+          <li class="list-group-item">
+            <small class="text-muted d-block">Tipo:</small>
+            <strong>{{ evidence.get_type_display }}</strong>
+          </li>
+          <li class="list-group-item">
+            <small class="text-muted d-block">Estado:</small>
+            <strong>
+              {% if evidence.condition == 'EXCELLENT' %}
+              <span class="badge bg-success">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'GOOD' %}
+              <span class="badge bg-success">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'FAIR' %}
+              <span class="badge bg-warning text-dark">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'POOR' %}
+              <span class="badge bg-danger">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'DAMAGED' %}
+              <span class="badge bg-danger">{{ evidence.get_condition_display }}</span>
+              {% endif %}
+              
+              {% if evidence.is_sensitive %}
+              <span class="badge bg-danger ms-1"><i class="fas fa-exclamation-triangle me-1"></i>Sensible</span>
+              {% endif %}
+            </strong>
+          </li>
+          <li class="list-group-item">
+            <small class="text-muted d-block">Ubicación actual:</small>
+            <strong>{{ evidence.storage_location }}</strong>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="card-footer">
+        <a href="{% url 'evidence:evidence_detail' evidence.id %}" class="btn btn-outline-primary btn-sm d-block">
+          <i class="fas fa-eye me-1"></i>Ver detalles completos
+        </a>
+      </div>
+    </div>
+    
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-question-circle me-2"></i>Ayuda</h5>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">
+          <i class="fas fa-info-circle me-1 text-primary"></i>
+          El registro de cadena de custodia permite documentar cada movimiento o traspaso de la evidencia.
+        </p>
+        <hr>
+        <ul class="text-muted small">
+          <li class="mb-2">Seleccione la persona que recibe la evidencia.</li>
+          <li class="mb-2">Opcionalmente, indique quién la entrega (si aplica).</li>
+          <li class="mb-2">Especifique el motivo del traspaso y la ubicación destino.</li>
+          <li>Incluya notas adicionales si es necesario.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Formatear widgets del formulario con clases de Bootstrap
+  document.addEventListener('DOMContentLoaded', function() {
+    const formControls = document.querySelectorAll('input, select, textarea');
+    formControls.forEach(function(element) {
+      if (element.type !== 'checkbox' && element.type !== 'radio') {
+        element.classList.add('form-control');
+      }
+      
+      if (element.required) {
+        element.classList.add('required');
+      }
+    });
+  });
+</script>
+{% endblock %} 

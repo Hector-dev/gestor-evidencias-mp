@@ -1,0 +1,58 @@
+# Entornos virtuales
+venv/
+env/
+ENV/
+
+# Base de datos
+*.sqlite3
+*.db
+
+# Archivos de caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Archivos de distribución
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# Directorios de Django
+staticfiles/
+media/
+
+# Archivos de log
+*.log
+logs/
+
+# Carpetas y archivos de entornos
+.env
+.env.local
+.env.*.local
+
+# VS Code
+.vscode/
+.idea/
+
+# Otros
+.DS_Store
+*.swp
+*~
+*.bak
+*.tmp
+.coverage
+htmlcov/
+
+# Archivos de Docker
+backups/ 

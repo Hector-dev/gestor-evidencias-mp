@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Evidencias - Sistema de Gestión de Evidencias{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2><i class="fas fa-box-archive me-2"></i>Evidencias</h2>
+  <a href="{% url 'evidence:evidence_create' %}" class="btn btn-primary">
+    <i class="fas fa-plus-circle me-1"></i>Nueva Evidencia
+  </a>
+</div>
+
+<div class="card shadow">
+  <div class="card-header bg-light">
+    <form method="get" action="{% url 'evidence:evidence_list' %}" class="row g-3">
+      <div class="col-md-4">
+        <div class="input-group">
+          <span class="input-group-text"><i class="fas fa-search"></i></span>
+          <input type="text" name="case_number" value="{{ request.GET.case_number|default:'' }}" class="form-control" placeholder="Buscar por N° de caso...">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <select name="type" class="form-select">
+          <option value="">Todos los tipos</option>
+          {% for type_code, type_name in evidence_types %}
+          <option value="{{ type_code }}" {% if request.GET.type == type_code %}selected{% endif %}>{{ type_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-secondary">
+          <i class="fas fa-filter me-1"></i>Filtrar
+        </button>
+        <a href="{% url 'evidence:evidence_list' %}" class="btn btn-outline-secondary">
+          <i class="fas fa-times me-1"></i>Limpiar
+        </a>
+      </div>
+    </form>
+  </div>
+  
+  <div class="card-body">
+    {% if evidences %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Código</th>
+            <th>Caso</th>
+            <th>Tipo</th>
+            <th>Recolector</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for evidence in evidences %}
+          <tr>
+            <td>
+              <span class="badge bg-primary">{{ evidence.code }}</span>
+            </td>
+            <td>{{ evidence.case_number }}</td>
+            <td>
+              {% if evidence.type == 'DOCUMENT' %}
+              <span class="badge bg-info text-dark"><i class="fas fa-file-alt me-1"></i>{{ evidence.get_type_display }}</span>
+              {% elif evidence.type == 'PHOTO' %}
+              <span class="badge bg-info text-dark"><i class="fas fa-image me-1"></i>{{ evidence.get_type_display }}</span>
+              {% elif evidence.type == 'VIDEO' %}
+              <span class="badge bg-info text-dark"><i class="fas fa-video me-1"></i>{{ evidence.get_type_display }}</span>
+              {% elif evidence.type == 'AUDIO' %}
+              <span class="badge bg-info text-dark"><i class="fas fa-volume-up me-1"></i>{{ evidence.get_type_display }}</span>
+              {% elif evidence.type == 'OBJECT' %}
+              <span class="badge bg-info text-dark"><i class="fas fa-box me-1"></i>{{ evidence.get_type_display }}</span>
+              {% elif evidence.type == 'DIGITAL' %}
+              <span class="badge bg-info text-dark"><i class="fas fa-laptop me-1"></i>{{ evidence.get_type_display }}</span>
+              {% elif evidence.type == 'SAMPLE' %}
+              <span class="badge bg-info text-dark"><i class="fas fa-vial me-1"></i>{{ evidence.get_type_display }}</span>
+              {% else %}
+              <span class="badge bg-info text-dark"><i class="fas fa-question me-1"></i>{{ evidence.get_type_display }}</span>
+              {% endif %}
+            </td>
+            <td>{{ evidence.collector.get_full_name|default:evidence.collector.username }}</td>
+            <td>{{ evidence.date_found|date:"d/m/Y H:i" }}</td>
+            <td>
+              {% if evidence.condition == 'EXCELLENT' %}
+              <span class="badge bg-success">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'GOOD' %}
+              <span class="badge bg-success">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'FAIR' %}
+              <span class="badge bg-warning text-dark">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'POOR' %}
+              <span class="badge bg-danger">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'DAMAGED' %}
+              <span class="badge bg-danger">{{ evidence.get_condition_display }}</span>
+              {% endif %}
+              
+              {% if evidence.is_sensitive %}
+              <span class="badge bg-danger ms-1"><i class="fas fa-exclamation-triangle me-1"></i>Sensible</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="btn-group">
+                <a href="{% url 'evidence:evidence_detail' evidence.id %}" class="btn btn-sm btn-info">
+                  <i class="fas fa-eye"></i>
+                </a>
+                <a href="{% url 'evidence:evidence_update' evidence.id %}" class="btn btn-sm btn-warning">
+                  <i class="fas fa-edit"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    {% if is_paginated %}
+    <nav aria-label="Paginación de evidencias">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1{% if request.GET.case_number %}&case_number={{ request.GET.case_number }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.case_number %}&case_number={{ request.GET.case_number }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}">
+            <i class="fas fa-angle-left"></i>
+          </a>
+        </li>
+        {% endif %}
+        
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+          <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+          </li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ num }}{% if request.GET.case_number %}&case_number={{ request.GET.case_number }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}">
+              {{ num }}
+            </a>
+          </li>
+          {% endif %}
+        {% endfor %}
+        
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.case_number %}&case_number={{ request.GET.case_number }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}">
+            <i class="fas fa-angle-right"></i>
+          </a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.case_number %}&case_number={{ request.GET.case_number }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+    
+    {% else %}
+    <div class="text-center py-5">
+      <i class="fas fa-box-open text-muted mb-3" style="font-size: 4rem;"></i>
+      <h4>No se encontraron evidencias</h4>
+      {% if request.GET.case_number or request.GET.type %}
+      <p class="text-muted">No hay resultados para los filtros aplicados.</p>
+      <a href="{% url 'evidence:evidence_list' %}" class="btn btn-outline-primary mt-2">
+        <i class="fas fa-undo me-1"></i>Limpiar filtros
+      </a>
+      {% else %}
+      <p class="text-muted">No hay evidencias registradas en el sistema.</p>
+      <a href="{% url 'evidence:evidence_create' %}" class="btn btn-primary mt-2">
+        <i class="fas fa-plus-circle me-1"></i>Registrar primera evidencia
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %} 

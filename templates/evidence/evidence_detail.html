@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}Evidencia {{ evidence.code }} - Sistema de Gestión de Evidencias{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>
+    <i class="fas fa-box-archive me-2"></i>
+    Evidencia <span class="badge bg-primary">{{ evidence.code }}</span>
+  </h2>
+  <div>
+    <a href="{% url 'evidence:evidence_list' %}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-1"></i>Volver
+    </a>
+    <a href="{% url 'evidence:evidence_update' evidence.id %}" class="btn btn-warning">
+      <i class="fas fa-edit me-1"></i>Editar
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información de la Evidencia</h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label text-muted">Número de Caso</label>
+            <p class="form-control-plaintext">{{ evidence.case_number }}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted">Código de Evidencia</label>
+            <p class="form-control-plaintext">{{ evidence.code }}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted">Tipo</label>
+            <p class="form-control-plaintext">{{ evidence.get_type_display }}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted">Estado</label>
+            <p class="form-control-plaintext">
+              {% if evidence.condition == 'EXCELLENT' %}
+              <span class="badge bg-success">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'GOOD' %}
+              <span class="badge bg-success">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'FAIR' %}
+              <span class="badge bg-warning text-dark">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'POOR' %}
+              <span class="badge bg-danger">{{ evidence.get_condition_display }}</span>
+              {% elif evidence.condition == 'DAMAGED' %}
+              <span class="badge bg-danger">{{ evidence.get_condition_display }}</span>
+              {% endif %}
+              
+              {% if evidence.is_sensitive %}
+              <span class="badge bg-danger ms-1"><i class="fas fa-exclamation-triangle me-1"></i>Sensible</span>
+              {% endif %}
+            </p>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label text-muted">Descripción</label>
+            <p class="form-control-plaintext">{{ evidence.description }}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted">Lugar encontrado</label>
+            <p class="form-control-plaintext">{{ evidence.location_found }}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted">Fecha y hora encontrada</label>
+            <p class="form-control-plaintext">{{ evidence.date_found|date:"d/m/Y H:i" }}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted">Recolector</label>
+            <p class="form-control-plaintext">{{ evidence.collector.get_full_name|default:evidence.collector.username }}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted">Embalaje</label>
+            <p class="form-control-plaintext">{{ evidence.packaging }}</p>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label text-muted">Ubicación de almacenamiento</label>
+            <p class="form-control-plaintext">{{ evidence.storage_location }}</p>
+          </div>
+          {% if evidence.notes %}
+          <div class="col-md-12">
+            <label class="form-label text-muted">Notas adicionales</label>
+            <p class="form-control-plaintext">{{ evidence.notes }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>Cadena de Custodia</h5>
+        <a href="{% url 'evidence:add_custody' evidence.id %}" class="btn btn-light btn-sm">
+          <i class="fas fa-plus-circle me-1"></i>Añadir Registro
+        </a>
+      </div>
+      <div class="card-body">
+        {% if custody_chain %}
+        <div class="timeline custody-timeline">
+          {% for custody in custody_chain %}
+          <div class="timeline-item">
+            <div class="timeline-point-wrapper">
+              <div class="timeline-point bg-primary">
+                <i class="fas fa-exchange-alt text-white"></i>
+              </div>
+            </div>
+            <div class="timeline-content">
+              <div class="card border-light mb-2">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                  <span class="fw-bold">{{ custody.date|date:"d/m/Y H:i" }}</span>
+                  <span class="badge bg-secondary">Registro #{{ forloop.counter }}</span>
+                </div>
+                <div class="card-body">
+                  <div class="row g-2">
+                    <div class="col-md-6">
+                      <small class="text-muted d-block">Recibido por:</small>
+                      <strong>{{ custody.received_by.get_full_name }}</strong>
+                    </div>
+                    <div class="col-md-6">
+                      <small class="text-muted d-block">Entregado por:</small>
+                      <strong>{{ custody.handed_by.get_full_name|default:"--" }}</strong>
+                    </div>
+                    <div class="col-md-12">
+                      <small class="text-muted d-block">Motivo:</small>
+                      <strong>{{ custody.reason }}</strong>
+                    </div>
+                    <div class="col-md-12">
+                      <small class="text-muted d-block">Destino:</small>
+                      <strong>{{ custody.destination }}</strong>
+                    </div>
+                    {% if custody.notes %}
+                    <div class="col-md-12">
+                      <small class="text-muted d-block">Notas:</small>
+                      <span>{{ custody.notes }}</span>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+          <i class="fas fa-exchange-alt text-muted mb-3" style="font-size: 3rem;"></i>
+          <h5>Sin registros de cadena de custodia</h5>
+          <p class="text-muted">Aún no hay registros de traspaso para esta evidencia.</p>
+          <a href="{% url 'evidence:add_custody' evidence.id %}" class="btn btn-primary mt-2">
+            <i class="fas fa-plus-circle me-1"></i>Añadir primer registro
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-image me-2"></i>Fotografía</h5>
+      </div>
+      <div class="card-body text-center">
+        {% if evidence.photo %}
+        <a href="{{ evidence.photo.url }}" target="_blank" class="d-block">
+          <img src="{{ evidence.photo.url }}" alt="Foto de evidencia" class="img-fluid img-thumbnail">
+        </a>
+        <a href="{{ evidence.photo.url }}" target="_blank" class="btn btn-outline-primary btn-sm mt-3">
+          <i class="fas fa-search-plus me-1"></i>Ver tamaño completo
+        </a>
+        {% else %}
+        <div class="py-5">
+          <i class="fas fa-camera text-muted mb-3" style="font-size: 4rem;"></i>
+          <h5>Sin fotografía</h5>
+          <p class="text-muted">No hay fotografía disponible para esta evidencia.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="card shadow mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Historial</h5>
+      </div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <small class="text-muted d-block">Creado el:</small>
+            <strong>{{ evidence.created_at|date:"d/m/Y H:i" }}</strong>
+          </li>
+          <li class="list-group-item">
+            <small class="text-muted d-block">Última actualización:</small>
+            <strong>{{ evidence.updated_at|date:"d/m/Y H:i" }}</strong>
+          </li>
+          <li class="list-group-item">
+            <small class="text-muted d-block">Cambios de custodia:</small>
+            <strong>{{ custody_chain|length }}</strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    {% if custody_form %}
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Registro Rápido</h5>
+      </div>
+      <div class="card-body">
+        <form method="post" action="{% url 'evidence:add_custody' evidence.id %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="id_received_by" class="form-label">Recibido por:</label>
+            {{ custody_form.received_by }}
+          </div>
+          <div class="mb-3">
+            <label for="id_handed_by" class="form-label">Entregado por:</label>
+            {{ custody_form.handed_by }}
+          </div>
+          <div class="mb-3">
+            <label for="id_reason" class="form-label">Motivo:</label>
+            {{ custody_form.reason }}
+          </div>
+          <div class="mb-3">
+            <label for="id_destination" class="form-label">Destino:</label>
+            {{ custody_form.destination }}
+          </div>
+          <div class="mb-3">
+            <label for="id_notes" class="form-label">Notas:</label>
+            {{ custody_form.notes }}
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-1"></i>Guardar Registro
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .custody-timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 2rem;
+  }
+  .timeline-item:not(:last-child):before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 30px;
+    height: calc(100% - 30px);
+    width: 2px;
+    background-color: #dee2e6;
+  }
+  .timeline-point-wrapper {
+    position: absolute;
+    left: -40px;
+    width: 30px;
+    height: 30px;
+  }
+  .timeline-point {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+{% endblock %} 

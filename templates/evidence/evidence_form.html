@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if form.instance.id %}
+  Editar Evidencia {{ form.instance.code }} - Sistema de Gestión de Evidencias
+  {% else %}
+  Nueva Evidencia - Sistema de Gestión de Evidencias
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>
+    <i class="fas fa-{% if form.instance.id %}edit{% else %}plus-circle{% endif %} me-2"></i>
+    {% if form.instance.id %}
+    Editar Evidencia <span class="badge bg-primary">{{ form.instance.code }}</span>
+    {% else %}
+    Nueva Evidencia
+    {% endif %}
+  </h2>
+  <div>
+    <a href="{% if form.instance.id %}{% url 'evidence:evidence_detail' form.instance.id %}{% else %}{% url 'evidence:evidence_list' %}{% endif %}" class="btn btn-outline-secondary">
+      <i class="fas fa-times me-1"></i>Cancelar
+    </a>
+  </div>
+</div>
+
+<div class="card shadow">
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0">
+      {% if form.instance.id %}
+      <i class="fas fa-edit me-2"></i>Formulario de Edición
+      {% else %}
+      <i class="fas fa-plus-circle me-2"></i>Formulario de Registro
+      {% endif %}
+    </h5>
+  </div>
+  <div class="card-body">
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+      
+      {% if form.errors %}
+      <div class="alert alert-danger mb-4">
+        <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Error en el formulario</h5>
+        <p>Por favor, corrija los siguientes errores:</p>
+        <ul class="mb-0">
+          {% for field in form %}
+            {% for error in field.errors %}
+            <li>{{ field.label }}: {{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      
+      <div class="row">
+        <div class="col-md-8">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.case_number.id_for_label }}" class="form-label">{{ form.case_number.label }} <span class="text-danger">*</span></label>
+                {{ form.case_number }}
+                {% if form.case_number.help_text %}
+                <div class="form-text">{{ form.case_number.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.type.id_for_label }}" class="form-label">{{ form.type.label }} <span class="text-danger">*</span></label>
+                {{ form.type }}
+                {% if form.type.help_text %}
+                <div class="form-text">{{ form.type.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }} <span class="text-danger">*</span></label>
+                {{ form.description }}
+                {% if form.description.help_text %}
+                <div class="form-text">{{ form.description.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.location_found.id_for_label }}" class="form-label">{{ form.location_found.label }} <span class="text-danger">*</span></label>
+                {{ form.location_found }}
+                {% if form.location_found.help_text %}
+                <div class="form-text">{{ form.location_found.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.date_found.id_for_label }}" class="form-label">{{ form.date_found.label }} <span class="text-danger">*</span></label>
+                {{ form.date_found }}
+                {% if form.date_found.help_text %}
+                <div class="form-text">{{ form.date_found.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.collector.id_for_label }}" class="form-label">{{ form.collector.label }} <span class="text-danger">*</span></label>
+                {{ form.collector }}
+                {% if form.collector.help_text %}
+                <div class="form-text">{{ form.collector.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.condition.id_for_label }}" class="form-label">{{ form.condition.label }} <span class="text-danger">*</span></label>
+                {{ form.condition }}
+                {% if form.condition.help_text %}
+                <div class="form-text">{{ form.condition.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.packaging.id_for_label }}" class="form-label">{{ form.packaging.label }} <span class="text-danger">*</span></label>
+                {{ form.packaging }}
+                {% if form.packaging.help_text %}
+                <div class="form-text">{{ form.packaging.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.storage_location.id_for_label }}" class="form-label">{{ form.storage_location.label }} <span class="text-danger">*</span></label>
+                {{ form.storage_location }}
+                {% if form.storage_location.help_text %}
+                <div class="form-text">{{ form.storage_location.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="{{ form.notes.id_for_label }}" class="form-label">{{ form.notes.label }}</label>
+                {{ form.notes }}
+                {% if form.notes.help_text %}
+                <div class="form-text">{{ form.notes.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="card border mb-4">
+            <div class="card-header bg-light">
+              <h6 class="mb-0"><i class="fas fa-image me-2"></i>Fotografía de la Evidencia</h6>
+            </div>
+            <div class="card-body">
+              <div class="text-center mb-3">
+                {% if form.instance.photo %}
+                <img src="{{ form.instance.photo.url }}" alt="Foto actual" class="img-fluid img-thumbnail mb-2" style="max-height: 200px;">
+                <p class="mb-0 text-muted">Foto actual</p>
+                {% else %}
+                <div class="py-4 bg-light rounded">
+                  <i class="fas fa-camera text-muted" style="font-size: 4rem;"></i>
+                  <p class="mt-2 mb-0 text-muted">Sin fotografía</p>
+                </div>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <label for="{{ form.photo.id_for_label }}" class="form-label">{{ form.photo.label }}</label>
+                {{ form.photo }}
+                {% if form.photo.help_text %}
+                <div class="form-text">{{ form.photo.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <div class="card border">
+            <div class="card-header bg-light">
+              <h6 class="mb-0"><i class="fas fa-cog me-2"></i>Configuración Adicional</h6>
+            </div>
+            <div class="card-body">
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" id="{{ form.is_sensitive.id_for_label }}" name="{{ form.is_sensitive.html_name }}" {% if form.is_sensitive.value %}checked{% endif %}>
+                <label class="form-check-label" for="{{ form.is_sensitive.id_for_label }}">{{ form.is_sensitive.label }}</label>
+                {% if form.is_sensitive.help_text %}
+                <div class="form-text">{{ form.is_sensitive.help_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-4 d-flex justify-content-end">
+        <a href="{% if form.instance.id %}{% url 'evidence:evidence_detail' form.instance.id %}{% else %}{% url 'evidence:evidence_list' %}{% endif %}" class="btn btn-secondary me-2">
+          <i class="fas fa-times me-1"></i>Cancelar
+        </a>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save me-1"></i>
+          {% if form.instance.id %}
+          Guardar Cambios
+          {% else %}
+          Registrar Evidencia
+          {% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Formatear widgets del formulario con clases de Bootstrap
+  document.addEventListener('DOMContentLoaded', function() {
+    const formControls = document.querySelectorAll('input, select, textarea');
+    formControls.forEach(function(element) {
+      if (element.type !== 'checkbox' && element.type !== 'radio') {
+        element.classList.add('form-control');
+      }
+      
+      if (element.required) {
+        element.classList.add('required');
+      }
+    });
+  });
+</script>
+{% endblock %} 

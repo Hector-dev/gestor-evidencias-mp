@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Sesión Cerrada - Sistema de Gestión de Evidencias{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 text-center">
+    <div class="card shadow">
+      <div class="card-body p-5">
+        <i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>
+        <h3>Sesión cerrada exitosamente</h3>
+        <p class="text-muted">Ha cerrado sesión de manera segura.</p>
+        <a href="{% url 'authentication:login' %}" class="btn btn-primary mt-3">
+          <i class="fas fa-sign-in-alt me-2"></i>Volver a iniciar sesión
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

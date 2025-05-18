@@ -1,0 +1,137 @@
+<div class="card shadow">
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Instrucciones de Configuración</h5>
+  </div>
+  <div class="card-body">
+    <h6 class="card-subtitle mb-3">Para configurar y probar el sistema en su máquina local, siga los siguientes pasos:</h6>
+    
+    <div class="mb-4">
+      <h5><i class="fas fa-1 me-2 text-primary"></i>Preparación del Entorno</h5>
+      <ol class="ps-3">
+        <li>Asegúrese de tener Python 3.8+ instalado en su sistema</li>
+        <li>Instale PostgreSQL 13+ y cree una base de datos llamada "gestor_evidencias"</li>
+        <li>Clone el repositorio en su máquina local</li>
+      </ol>
+      <div class="card bg-light mt-2">
+        <div class="card-body">
+          <pre class="mb-0"><code>git clone https://github.com/ministerio-publico/gestor_evidencias_mp.git
+cd gestor_evidencias_mp</code></pre>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mb-4">
+      <h5><i class="fas fa-2 me-2 text-primary"></i>Configuración del Entorno Virtual</h5>
+      <ol class="ps-3">
+        <li>Cree un entorno virtual para el proyecto</li>
+        <li>Active el entorno virtual</li>
+        <li>Instale las dependencias requeridas</li>
+      </ol>
+      <div class="card bg-light mt-2">
+        <div class="card-body">
+          <pre class="mb-0"><code># Crear entorno virtual
+python -m venv venv
+
+# Activar entorno virtual (Windows)
+venv\Scripts\activate
+
+# Activar entorno virtual (Linux/Mac)
+source venv/bin/activate
+
+# Instalar dependencias
+pip install -r requirements.txt</code></pre>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mb-4">
+      <h5><i class="fas fa-3 me-2 text-primary"></i>Configuración del Proyecto</h5>
+      <ol class="ps-3">
+        <li>Cree un archivo .env basado en el archivo env.example</li>
+        <li>Configure las variables de entorno de acuerdo a su entorno local</li>
+      </ol>
+      <div class="card bg-light mt-2">
+        <div class="card-body">
+          <pre class="mb-0"><code># Windows
+copy env.example .env
+
+# Linux/Mac
+cp env.example .env
+
+# Edite el archivo .env con su configuración de base de datos</code></pre>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mb-4">
+      <h5><i class="fas fa-4 me-2 text-primary"></i>Preparación de la Base de Datos</h5>
+      <ol class="ps-3">
+        <li>Ejecute las migraciones para crear las tablas en la base de datos</li>
+        <li>Cree un superusuario para acceder al sistema</li>
+      </ol>
+      <div class="card bg-light mt-2">
+        <div class="card-body">
+          <pre class="mb-0"><code># Aplicar migraciones
+python manage.py migrate
+
+# Crear superusuario
+python manage.py createsuperuser</code></pre>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mb-4">
+      <h5><i class="fas fa-5 me-2 text-primary"></i>Ejecución del Servidor de Desarrollo</h5>
+      <ol class="ps-3">
+        <li>Inicie el servidor de desarrollo de Django</li>
+        <li>Acceda a la aplicación a través de su navegador web</li>
+      </ol>
+      <div class="card bg-light mt-2">
+        <div class="card-body">
+          <pre class="mb-0"><code># Iniciar servidor de desarrollo
+python manage.py runserver
+
+# Acceda a la aplicación en: http://localhost:8000/</code></pre>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mb-4">
+      <h5><i class="fas fa-6 me-2 text-primary"></i>Ejecución de Pruebas</h5>
+      <ol class="ps-3">
+        <li>Ejecute las pruebas unitarias para verificar que todo funciona correctamente</li>
+      </ol>
+      <div class="card bg-light mt-2">
+        <div class="card-body">
+          <pre class="mb-0"><code># Ejecutar todas las pruebas
+pytest
+
+# Ejecutar pruebas específicas
+pytest tests/test_auth.py</code></pre>
+        </div>
+      </div>
+    </div>
+    
+    <div class="alert alert-info">
+      <h6 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Uso con Docker</h6>
+      <p class="mb-0">Alternativamente, puede usar Docker y Docker Compose para ejecutar todo el sistema sin necesidad de instalar PostgreSQL localmente:</p>
+      <div class="card bg-light mt-2">
+        <div class="card-body">
+          <pre class="mb-0"><code># Copiar archivo de variables de entorno
+copy env.example .env  # (Windows)
+cp env.example .env    # (Linux/Mac)
+
+# Editar archivo .env según sea necesario
+
+# Construir y levantar los contenedores
+docker-compose up -d
+
+# Crear superusuario
+docker-compose exec web python manage.py createsuperuser
+
+# Acceda a la aplicación en: http://localhost:8000/</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
