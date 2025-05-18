@@ -35,7 +35,7 @@ Sistema para la gestión, seguimiento y control de evidencias para el Ministerio
 
 1. Clone el repositorio:
    ```
-   git clone https://github.com/ministerio-publico/gestor_evidencias_mp.git
+   git clone https://github.com/Hector-dev/gestor-evidencias-mp.git
    cd gestor_evidencias_mp
    ```
 
