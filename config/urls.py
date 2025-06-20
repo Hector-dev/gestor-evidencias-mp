@@ -6,6 +6,7 @@ from django.views.generic import RedirectView
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
+from django.shortcuts import redirect
 
 # Configurar el esquema de API
 schema_view = get_schema_view(
@@ -21,16 +22,16 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-  # Admin site
-  path('admin/', admin.site.urls),
+  # Redirigir /admin/ a /panel/
+  path('admin/', lambda request: redirect('/panel/', permanent=True)),
   
-  # Autenticación
-  path('accounts/', include('apps.authentication.urls')),
-  path('accounts/', include('allauth.urls')),
+  # Autenticación personalizada
+  path('', include('apps.authentication.urls')),
   
   # Aplicaciones
   path('evidencias/', include('apps.evidence.urls')),
   path('reportes/', include('apps.reporting.urls')),
+  path('utilidades/', include('apps.utils.urls')),
   
   # API docs
   path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

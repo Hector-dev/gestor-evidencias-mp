@@ -12,28 +12,41 @@
 
 <div class="card shadow">
   <div class="card-header bg-light">
-    <form method="get" action="{% url 'evidence:evidence_list' %}" class="row g-3">
-      <div class="col-md-4">
-        <div class="input-group">
-          <span class="input-group-text"><i class="fas fa-search"></i></span>
-          <input type="text" name="case_number" value="{{ request.GET.case_number|default:'' }}" class="form-control" placeholder="Buscar por N° de caso...">
-        </div>
+    <form method="get" class="row g-2 mb-3">
+      <div class="col-md-2">
+        <input type="text" name="case_number" class="form-control" placeholder="N° de caso" value="{{ request.GET.case_number }}">
       </div>
-      <div class="col-md-4">
+      <div class="col-md-2">
         <select name="type" class="form-select">
-          <option value="">Todos los tipos</option>
-          {% for type_code, type_name in evidence_types %}
-          <option value="{{ type_code }}" {% if request.GET.type == type_code %}selected{% endif %}>{{ type_name }}</option>
+          <option value="">Tipo</option>
+          {% for val, label in evidence_types %}
+            <option value="{{ val }}" {% if request.GET.type == val %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-4">
-        <button type="submit" class="btn btn-secondary">
-          <i class="fas fa-filter me-1"></i>Filtrar
-        </button>
-        <a href="{% url 'evidence:evidence_list' %}" class="btn btn-outline-secondary">
-          <i class="fas fa-times me-1"></i>Limpiar
-        </a>
+      <div class="col-md-2">
+        <select name="condition" class="form-select">
+          <option value="">Condición</option>
+          {% for val, label in condition_choices %}
+            <option value="{{ val }}" {% if request.GET.condition == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input type="text" name="storage_location" class="form-control" placeholder="Ubicación" value="{{ request.GET.storage_location }}">
+      </div>
+      <div class="col-md-2">
+        <input type="text" name="collector" class="form-control" placeholder="Recolector" value="{{ request.GET.collector }}">
+      </div>
+      <div class="col-md-1">
+        <input type="date" name="date_from" class="form-control" value="{{ request.GET.date_from }}">
+      </div>
+      <div class="col-md-1">
+        <input type="date" name="date_to" class="form-control" value="{{ request.GET.date_to }}">
+      </div>
+      <div class="col-md-12 mt-2">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <a href="?" class="btn btn-secondary">Limpiar</a>
       </div>
     </form>
   </div>

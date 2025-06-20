@@ -32,20 +32,13 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'evidence:evidence_create' %}">
-              <i class="fas fa-plus-circle me-1"></i> Nueva Evidencia
-            </a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="{% url 'reporting:report_list' %}">
               <i class="fas fa-chart-bar me-1"></i> Reportes
             </a>
           </li>
           {% if user.is_staff %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'admin:index' %}">
-              <i class="fas fa-cog me-1"></i> Administración
-            </a>
+            <a class="nav-link" href="{% url 'authentication:admin_panel' %}">Panel de Administración</a>
           </li>
           {% endif %}
           {% endif %}

@@ -264,5 +264,57 @@ Consulte la documentación detallada en `scripts/info_inicio.md`
 - Verificar tipos: `mypy .`
 - Generar documentación: `cd docs && make html`
 
+# Despliegue en red local con Docker
+
+## 1. Configuración del entorno
+
+Copia el archivo de ejemplo de variables de entorno y edítalo:
+
+```bash
+cp env.example .env
+```
+
+Edita el archivo `.env` para que contenga:
+
+```
+DEBUG=True
+SECRET_KEY=tu_clave_secreta_para_desarrollo
+ALLOWED_HOSTS=*
+DB_ENGINE=postgresql
+DB_NAME=gestor_evidencias
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
+```
+
+> **Advertencia:** Usar `ALLOWED_HOSTS=*` solo es seguro en redes locales cerradas. **No uses esto si vas a exponer el sistema a internet.**
+
+## 2. Levantar los servicios
+
+Ejecuta:
+
+```bash
+docker compose up --build
+```
+
+## 3. Acceso desde otros equipos
+
+Desde cualquier equipo conectado a la misma red local, abre un navegador y accede a:
+
+```
+http://<IP_DE_TU_PC>:8000
+```
+
+Donde `<IP_DE_TU_PC>` es la dirección IP local del equipo donde se ejecuta Docker (puedes obtenerla con `ipconfig` en Windows).
+
+## 4. Permitir el puerto en el firewall (Windows)
+
+Ejecuta PowerShell como administrador y permite el puerto 8000:
+
+```powershell
+New-NetFirewallRule -DisplayName "Django 8000" -Direction Inbound -LocalPort 8000 -Protocol TCP -Action Allow
+```
+
 ---
 <!-- Honrando el trabajo de Héctor M. Rodríguez A. --> 

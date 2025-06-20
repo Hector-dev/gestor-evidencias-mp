@@ -17,6 +17,17 @@ IF %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
+REM Comprobar si Docker Desktop está en ejecución
+docker info >nul 2>nul
+IF %ERRORLEVEL% NEQ 0 (
+    echo Docker Desktop no está en ejecución. Por favor, inicia Docker Desktop primero.
+    echo 1. Busca Docker Desktop en el menú inicio
+    echo 2. Inicia la aplicación y espera a que se inicialice completamente
+    echo 3. Cuando veas el icono de Docker en la barra de tareas, intenta ejecutar este script nuevamente.
+    pause
+    exit /b 1
+)
+
 REM Directorio del proyecto
 pushd %~dp0..
 
@@ -32,6 +43,11 @@ IF NOT EXIST .env (
 REM Iniciar los contenedores en modo detached
 echo Iniciando los contenedores Docker...
 docker-compose up -d
+IF %ERRORLEVEL% NEQ 0 (
+    echo Error al iniciar los contenedores Docker. Comprueba los mensajes anteriores.
+    pause
+    exit /b 1
+)
 
 echo Sistema iniciado correctamente. Accede a través de: http://localhost:8000
 pause 

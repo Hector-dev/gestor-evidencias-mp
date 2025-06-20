@@ -15,6 +15,7 @@
     <a href="{% url 'evidence:evidence_update' evidence.id %}" class="btn btn-warning">
       <i class="fas fa-edit me-1"></i>Editar
     </a>
+    <a href="{% url 'evidence:evidence_pdf' evidence.pk %}" class="btn btn-danger">Descargar Ficha PDF</a>
   </div>
 </div>
 
@@ -95,7 +96,7 @@
     <div class="card shadow">
       <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>Cadena de Custodia</h5>
-        <a href="{% url 'evidence:add_custody' evidence.id %}" class="btn btn-light btn-sm">
+        <a href="{% url 'evidence:custody_create' evidence.id %}" class="btn btn-light btn-sm">
           <i class="fas fa-plus-circle me-1"></i>Añadir Registro
         </a>
       </div>
@@ -151,7 +152,7 @@
           <i class="fas fa-exchange-alt text-muted mb-3" style="font-size: 3rem;"></i>
           <h5>Sin registros de cadena de custodia</h5>
           <p class="text-muted">Aún no hay registros de traspaso para esta evidencia.</p>
-          <a href="{% url 'evidence:add_custody' evidence.id %}" class="btn btn-primary mt-2">
+          <a href="{% url 'evidence:custody_create' evidence.id %}" class="btn btn-primary mt-2">
             <i class="fas fa-plus-circle me-1"></i>Añadir primer registro
           </a>
         </div>
@@ -211,7 +212,7 @@
         <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Registro Rápido</h5>
       </div>
       <div class="card-body">
-        <form method="post" action="{% url 'evidence:add_custody' evidence.id %}">
+        <form method="post" action="{% url 'evidence:custody_create' evidence.id %}">
           {% csrf_token %}
           <div class="mb-3">
             <label for="id_received_by" class="form-label">Recibido por:</label>

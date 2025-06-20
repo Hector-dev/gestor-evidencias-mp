@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}{{ report_title }} - Sistema de Gestión de Evidencias{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'reporting:report_list' %}">Reportes</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ report_title }}</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2><i class="fas fa-box-archive me-2"></i>{{ report_title }}</h2>
+  <div class="btn-group">
+    <a href="{% url 'reporting:export_csv' %}" class="btn btn-outline-success">
+      <i class="fas fa-table me-1"></i>Exportar CSV
+    </a>
+    <a href="{% url 'reporting:export_pdf' %}" class="btn btn-outline-danger">
+      <i class="fas fa-file-pdf me-1"></i>Exportar PDF
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Distribución de Evidencias por Tipo</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Porcentaje</th>
+                <th>Gráfico</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for type in evidence_types %}
+              <tr>
+                <td>
+                  {% if type.type == 'DOCUMENT' %}
+                  <span class="badge bg-info text-dark"><i class="fas fa-file-alt me-1"></i>Documento</span>
+                  {% elif type.type == 'PHOTO' %}
+                  <span class="badge bg-info text-dark"><i class="fas fa-image me-1"></i>Fotografía</span>
+                  {% elif type.type == 'VIDEO' %}
+                  <span class="badge bg-info text-dark"><i class="fas fa-video me-1"></i>Video</span>
+                  {% elif type.type == 'AUDIO' %}
+                  <span class="badge bg-info text-dark"><i class="fas fa-volume-up me-1"></i>Audio</span>
+                  {% elif type.type == 'OBJECT' %}
+                  <span class="badge bg-info text-dark"><i class="fas fa-box me-1"></i>Objeto físico</span>
+                  {% elif type.type == 'DIGITAL' %}
+                  <span class="badge bg-info text-dark"><i class="fas fa-laptop me-1"></i>Evidencia digital</span>
+                  {% elif type.type == 'SAMPLE' %}
+                  <span class="badge bg-info text-dark"><i class="fas fa-vial me-1"></i>Muestra biológica</span>
+                  {% else %}
+                  <span class="badge bg-info text-dark"><i class="fas fa-question me-1"></i>Otro</span>
+                  {% endif %}
+                </td>
+                <td>{{ type.count }}</td>
+                <td>{{ type.count|floatformat:1 }}%</td>
+                <td>
+                  <div class="progress">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ type.count }}%;" 
+                         aria-valuenow="{{ type.count }}" aria-valuemin="0" aria-valuemax="100">
+                      {{ type.count }}%
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center">No hay evidencias registradas en el sistema.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot class="table-light">
+              <tr>
+                <th>Total</th>
+                <th>{{ total_evidence }}</th>
+                <th>100%</th>
+                <th></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Resumen</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <strong>Total de evidencias:</strong> {{ total_evidence }}
+        </div>
+        <div class="mb-3">
+          <strong>Tipo más común:</strong>
+          {% with most_common=evidence_types.0 %}
+          {% if most_common %}
+          {% if most_common.type == 'DOCUMENT' %}
+          <span class="badge bg-info text-dark"><i class="fas fa-file-alt me-1"></i>Documento</span>
+          {% elif most_common.type == 'PHOTO' %}
+          <span class="badge bg-info text-dark"><i class="fas fa-image me-1"></i>Fotografía</span>
+          {% elif most_common.type == 'VIDEO' %}
+          <span class="badge bg-info text-dark"><i class="fas fa-video me-1"></i>Video</span>
+          {% elif most_common.type == 'AUDIO' %}
+          <span class="badge bg-info text-dark"><i class="fas fa-volume-up me-1"></i>Audio</span>
+          {% elif most_common.type == 'OBJECT' %}
+          <span class="badge bg-info text-dark"><i class="fas fa-box me-1"></i>Objeto físico</span>
+          {% elif most_common.type == 'DIGITAL' %}
+          <span class="badge bg-info text-dark"><i class="fas fa-laptop me-1"></i>Evidencia digital</span>
+          {% elif most_common.type == 'SAMPLE' %}
+          <span class="badge bg-info text-dark"><i class="fas fa-vial me-1"></i>Muestra biológica</span>
+          {% else %}
+          <span class="badge bg-info text-dark"><i class="fas fa-question me-1"></i>Otro</span>
+          {% endif %}
+          ({{ most_common.count }} evidencias)
+          {% else %}
+          No hay datos
+          {% endif %}
+          {% endwith %}
+        </div>
+        <hr>
+        <p><strong>Reporte generado el:</strong> {{ generated_at|date:"d/m/Y H:i" }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

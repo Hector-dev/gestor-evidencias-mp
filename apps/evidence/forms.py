@@ -36,7 +36,6 @@ class CustodyChainForm(forms.ModelForm):
   class Meta:
     model = CustodyChain
     fields = [
-      'evidence',
       'received_by',
       'handed_by',
       'reason',

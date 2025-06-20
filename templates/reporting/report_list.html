@@ -16,7 +16,7 @@
         <p class="card-text">Visualiza la distribución de evidencias según su tipo y categoría.</p>
       </div>
       <div class="card-footer text-center">
-        <a href="#" class="btn btn-primary">
+        <a href="{% url 'reporting:evidence_by_type' %}" class="btn btn-primary">
           <i class="fas fa-eye me-1"></i>Ver Reporte
         </a>
       </div>
@@ -31,7 +31,7 @@
         <p class="card-text">Análisis de evidencias recolectadas por mes, trimestre o año.</p>
       </div>
       <div class="card-footer text-center">
-        <a href="#" class="btn btn-primary">
+        <a href="{% url 'reporting:evidence_by_period' %}" class="btn btn-primary">
           <i class="fas fa-eye me-1"></i>Ver Reporte
         </a>
       </div>
@@ -46,7 +46,7 @@
         <p class="card-text">Historial de movimientos y traspasos de evidencias en el sistema.</p>
       </div>
       <div class="card-footer text-center">
-        <a href="#" class="btn btn-primary">
+        <a href="{% url 'reporting:custody_chain' %}" class="btn btn-primary">
           <i class="fas fa-eye me-1"></i>Ver Reporte
         </a>
       </div>
@@ -61,7 +61,7 @@
         <p class="card-text">Listado y estadísticas de evidencias marcadas como sensibles.</p>
       </div>
       <div class="card-footer text-center">
-        <a href="#" class="btn btn-primary">
+        <a href="{% url 'reporting:sensitive_evidences' %}" class="btn btn-primary">
           <i class="fas fa-eye me-1"></i>Ver Reporte
         </a>
       </div>
@@ -76,7 +76,7 @@
         <p class="card-text">Monitoreo de la actividad de usuarios en el sistema.</p>
       </div>
       <div class="card-footer text-center">
-        <a href="#" class="btn btn-primary">
+        <a href="{% url 'reporting:user_activity' %}" class="btn btn-primary">
           <i class="fas fa-eye me-1"></i>Ver Reporte
         </a>
       </div>
@@ -88,11 +88,14 @@
       <div class="card-body text-center py-4">
         <i class="fas fa-file-export text-primary mb-3" style="font-size: 3rem;"></i>
         <h4 class="card-title">Exportar Datos</h4>
-        <p class="card-text">Exporta datos del sistema en diferentes formatos (PDF, Excel, CSV).</p>
+        <p class="card-text">Exporta datos del sistema en diferentes formatos.</p>
       </div>
-      <div class="card-footer text-center">
-        <a href="#" class="btn btn-primary">
-          <i class="fas fa-download me-1"></i>Exportar
+      <div class="card-footer d-flex justify-content-around">
+        <a href="{% url 'reporting:export_csv' %}" class="btn btn-success">
+          <i class="fas fa-table me-1"></i>CSV
+        </a>
+        <a href="{% url 'reporting:export_pdf' %}" class="btn btn-danger">
+          <i class="fas fa-file-pdf me-1"></i>PDF
         </a>
       </div>
     </div>
@@ -106,6 +109,16 @@
   <div class="card-body">
     <p>Esta sección permite generar informes y estadísticas sobre las evidencias registradas en el sistema. Los reportes pueden ser personalizados según diferentes criterios y exportados en diversos formatos.</p>
     <p>Para solicitar un nuevo tipo de reporte, contacte al administrador del sistema.</p>
+    <div class="alert alert-info">
+      <i class="fas fa-lock me-2"></i>Solo los usuarios con rol administrativo o administrador pueden exportar reportes.
+    </div>
   </div>
+</div>
+
+<div class="mb-3">
+  <a href="{% url 'reporting:export_csv' %}" class="btn btn-success">Exportar Evidencias CSV</a>
+  <a href="{% url 'reporting:export_pdf' %}" class="btn btn-danger">Exportar Evidencias PDF</a>
+  <a href="{% url 'reporting:evidence_by_type_pdf' %}" class="btn btn-danger">Exportar por Tipo PDF</a>
+  <a href="{% url 'reporting:user_activity_pdf' %}" class="btn btn-danger">Exportar Actividad PDF</a>
 </div>
 {% endblock %} 

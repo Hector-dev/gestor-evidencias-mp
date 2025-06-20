@@ -18,6 +18,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-key-for-development-only')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+if '*' in ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
   'apps.authentication.apps.AuthenticationConfig',
   'apps.evidence.apps.EvidenceConfig',
   'apps.reporting.apps.ReportingConfig',
+  'apps.utils.apps.UtilsConfig',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +60,7 @@ MIDDLEWARE = [
   'django.middleware.clickjacking.XFrameOptionsMiddleware',
   'debug_toolbar.middleware.DebugToolbarMiddleware',
   'allauth.account.middleware.AccountMiddleware',
+  'apps.utils.middleware.ActivityLogMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
