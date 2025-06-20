@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}{{ report_title }} - Sistema de Gestión de Evidencias{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'reporting:report_list' %}">Reportes</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ report_title }}</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2><i class="fas fa-user-shield me-2"></i>{{ report_title }}</h2>
+  <div class="btn-group">
+    <a href="{% url 'reporting:user_activity' %}?days=7" class="btn btn-outline-secondary {% if days == 7 %}active{% endif %}">
+      Últimos 7 días
+    </a>
+    <a href="{% url 'reporting:user_activity' %}?days=30" class="btn btn-outline-secondary {% if days == 30 %}active{% endif %}">
+      Últimos 30 días
+    </a>
+    <a href="{% url 'reporting:user_activity' %}?days=90" class="btn btn-outline-secondary {% if days == 90 %}active{% endif %}">
+      Últimos 90 días
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Historial de Actividad</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Usuario</th>
+                <th>Acción</th>
+                <th>Contenido</th>
+                <th>Fecha y Hora</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for log in activity_logs %}
+              <tr>
+                <td>{{ log.user.get_full_name|default:log.user.username }}</td>
+                <td>
+                  {% if log.action == 'create' %}
+                  <span class="badge bg-success">Creación</span>
+                  {% elif log.action == 'update' %}
+                  <span class="badge bg-warning text-dark">Actualización</span>
+                  {% elif log.action == 'delete' %}
+                  <span class="badge bg-danger">Eliminación</span>
+                  {% elif log.action == 'view' %}
+                  <span class="badge bg-info text-dark">Visualización</span>
+                  {% elif log.action == 'login' %}
+                  <span class="badge bg-primary">Inicio de sesión</span>
+                  {% elif log.action == 'logout' %}
+                  <span class="badge bg-secondary">Cierre de sesión</span>
+                  {% elif log.action == 'export' %}
+                  <span class="badge bg-primary">Exportación</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if log.object_id %}
+                  {{ log.content_type }} (ID: {{ log.object_id }})
+                  {% else %}
+                  {{ log.content_type }}
+                  {% endif %}
+                </td>
+                <td>{{ log.timestamp|date:"d/m/Y H:i:s" }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center">No hay registros de actividad para este período.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Usuarios Más Activos</h5>
+      </div>
+      <div class="card-body">
+        {% if user_activity %}
+        <div class="list-group">
+          {% for activity in user_activity %}
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            {{ activity.user__username }}
+            <span class="badge bg-primary rounded-pill">{{ activity.count }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center">No hay datos disponibles.</p>
+        {% endif %}
+        
+        <hr>
+        <p>
+          <strong>Período:</strong><br>
+          {{ start_date|date:"d/m/Y" }} - {{ end_date|date:"d/m/Y" }}
+        </p>
+        <p><strong>Reporte generado el:</strong><br>
+        {{ generated_at|date:"d/m/Y H:i" }}</p>
+      </div>
+    </div>
+    
+    <div class="card shadow">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Acciones</h5>
+      </div>
+      <div class="card-body">
+        <a href="{% url 'reporting:export_csv' %}" class="btn btn-success w-100 mb-2">
+          <i class="fas fa-file-csv me-1"></i>Exportar a CSV
+        </a>
+        <a href="{% url 'reporting:export_pdf' %}" class="btn btn-danger w-100">
+          <i class="fas fa-file-pdf me-1"></i>Exportar a PDF
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Backups{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Gestión de Backups</h2>
+  <div class="mb-3">
+    <a href="{% url 'utils:backup_create' %}" class="btn btn-primary">Crear Backup</a>
+    <a href="{% url 'utils:backup_restore' %}" class="btn btn-warning">Restaurar Backup</a>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Usuario</th>
+        <th>Tipo</th>
+        <th>Archivo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for backup in backups %}
+      <tr>
+        <td>{{ backup.fecha|date:'d/m/Y H:i' }}</td>
+        <td>{{ backup.usuario }}</td>
+        <td>{{ backup.get_tipo_display }}</td>
+        <td>{{ backup.archivo.name|cut:'backups/' }}</td>
+        <td>
+          <a href="{% url 'utils:backup_download' backup.pk %}" class="btn btn-sm btn-success">Descargar</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">No hay backups registrados.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if is_paginated %}
+    <nav>
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+{% endblock %} 

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Reporte de Evidencias por Período - Sistema de Gestión de Evidencias{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'reporting:report_list' %}">Reportes</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Evidencias por Período</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2><i class="fas fa-calendar-alt me-2"></i>Reporte de Evidencias por Período</h2>
+  <div class="btn-group">
+    <a href="{% url 'reporting:evidence_by_period_csv' %}" class="btn btn-outline-success">
+      <i class="fas fa-table me-1"></i>Exportar CSV
+    </a>
+    <a href="{% url 'reporting:evidence_by_period_pdf' %}" class="btn btn-outline-danger">
+      <i class="fas fa-file-pdf me-1"></i>Exportar PDF
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Evidencias por Mes/Año</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Período</th>
+                <th>Total de Evidencias</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in evidences %}
+              <tr>
+                <td>{{ row.period|date:'F Y' }}</td>
+                <td>{{ row.total }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="2" class="text-center">No hay evidencias registradas en este período.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Resumen</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <strong>Total de períodos:</strong> {{ evidences|length }}
+        </div>
+        <hr>
+        <p><strong>Reporte generado el:</strong> {{ now|date:"d/m/Y H:i" }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

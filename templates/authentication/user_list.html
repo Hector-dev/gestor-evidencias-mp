@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Usuarios</h2>
+  <div class="mb-3">
+    <a href="{% url 'authentication:user_create' %}" class="btn btn-primary">Crear Usuario</a>
+    <a href="{% url 'authentication:user_export_csv' %}" class="btn btn-success">Exportar CSV</a>
+    <a href="{% url 'authentication:user_export_pdf' %}" class="btn btn-danger">Exportar PDF</a>
+    <a href="{% url 'authentication:admin_panel' %}" class="btn btn-secondary">Volver al Panel</a>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Usuario</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Activo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.get_full_name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.get_role_display }}</td>
+        <td>{{ user.is_active|yesno:"Sí,No" }}</td>
+        <td>
+          <a href="{% url 'authentication:user_edit' user.pk %}" class="btn btn-sm btn-warning">Editar</a>
+          <a href="{% url 'authentication:user_delete' user.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No hay usuarios registrados.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if is_paginated %}
+    <nav>
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+{% endblock %} 

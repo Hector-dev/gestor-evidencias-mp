@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Restaurar Backup{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Restaurar Backup</h2>
+  <div class="alert alert-warning">
+    <strong>¡Advertencia!</strong> Restaurar un backup sobrescribirá toda la base de datos actual. Realiza esta acción solo si estás seguro.
+  </div>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="backup_file" class="form-label">Archivo de backup (.sql)</label>
+      <input type="file" name="backup_file" id="backup_file" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-danger">Restaurar</button>
+    <a href="{% url 'utils:backup_list' %}" class="btn btn-secondary">Volver</a>
+  </form>
+</div>
+{% endblock %} 

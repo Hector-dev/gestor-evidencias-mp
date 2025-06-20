@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Logs de Actividad{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Logs de Actividad</h2>
+  <div class="mb-3">
+    <a href="{% url 'utils:download_logs_txt' %}" class="btn btn-success">Descargar como TXT</a>
+    <a href="{% url 'authentication:admin_panel' %}" class="btn btn-secondary">Volver al Panel</a>
+  </div>
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>Usuario</th>
+        <th>Acción</th>
+        <th>Tipo</th>
+        <th>Objeto</th>
+        <th>IP</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td>{{ log.user }}</td>
+        <td>{{ log.get_action_display }}</td>
+        <td>{{ log.content_type }}</td>
+        <td>{{ log.object_id }}</td>
+        <td>{{ log.ip_address }}</td>
+        <td>{{ log.timestamp|date:'d/m/Y H:i' }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No hay registros de actividad.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if logs.has_other_pages %}
+    <nav>
+      <ul class="pagination">
+        {% if logs.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ logs.previous_page_number }}">Anterior</a></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ logs.number }}</span></li>
+        {% if logs.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ logs.next_page_number }}">Siguiente</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+{% endblock %} 

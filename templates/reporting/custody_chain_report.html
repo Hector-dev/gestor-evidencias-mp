@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Reporte de Cadena de Custodia - Sistema de Gestión de Evidencias{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'reporting:report_list' %}">Reportes</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Cadena de Custodia</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2><i class="fas fa-link me-2"></i>Reporte de Cadena de Custodia</h2>
+  <div class="btn-group">
+    <a href="{% url 'reporting:custody_chain_csv' %}" class="btn btn-outline-success">
+      <i class="fas fa-table me-1"></i>Exportar CSV
+    </a>
+    <a href="{% url 'reporting:custody_chain_pdf' %}" class="btn btn-outline-danger">
+      <i class="fas fa-file-pdf me-1"></i>Exportar PDF
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Movimientos de Cadena de Custodia</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Fecha</th>
+                <th>Evidencia</th>
+                <th>Recibido por</th>
+                <th>Entregado por</th>
+                <th>Motivo</th>
+                <th>Destino</th>
+                <th>Notas</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for chain in chains %}
+              <tr>
+                <td>{{ chain.date|date:'d/m/Y H:i' }}</td>
+                <td>{{ chain.evidence.code }}</td>
+                <td>{{ chain.received_by }}</td>
+                <td>{{ chain.handed_by|default:'--' }}</td>
+                <td>{{ chain.reason }}</td>
+                <td>{{ chain.destination }}</td>
+                <td>{{ chain.notes|default:'--' }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="7" class="text-center">No hay registros de cadena de custodia.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Resumen</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <strong>Total de movimientos:</strong> {{ chains|length }}
+        </div>
+        <hr>
+        <p><strong>Reporte generado el:</strong> {{ now|date:"d/m/Y H:i" }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
