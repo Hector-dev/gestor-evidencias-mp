@@ -56,3 +56,7 @@ htmlcov/
 
 # Archivos de Docker
 backups/ 
+# Variables de entorno
+.env
+.env.*
+!.env.example
